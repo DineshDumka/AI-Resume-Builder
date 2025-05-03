@@ -29,6 +29,7 @@ const ViewResume = () => {
 
         if (resumeSnap.exists()) {
           const data = resumeSnap.data();
+          console.log("Resume data fetched:", data);
           setResumeInfo(data)
         } else {
           console.error("No resume found!");
@@ -65,7 +66,7 @@ const ViewResume = () => {
     );
   }
 
-  const fullName = `${resumeInfo?.personalInfo?.firstName || ''} ${resumeInfo?.personalInfo?.lastName || ''}`;
+  const fullName = `${resumeInfo?.personalDetail?.firstName || ''} ${resumeInfo?.personalDetail?.lastName || ''}`;
   const shareUrl = `${window.location.origin}/my-resume/${email}/${resumeId}/view`;
 
   return (

@@ -10,7 +10,23 @@ import { app } from "@/utils/firebase_config";
 const API_KEY = import.meta.env.VITE_GOOGLE_GEMINI_API_KEY;
 
 
-const prompt = `Given the job title "{jobTitle}", provide three job summary suggestions for a resume. Each suggestion should be in JSON format with fields "experience_level" (values can be "Fresher", "Mid-level", "Experienced") and "summary" (a brief summary). Output an array of JSON objects.`;
+const prompt = `Given the job title "{jobTitle}", provide three job summary suggestions for a resume. Each suggestion should be in JSON format with fields "experience_level" (values can be "Fresher", "Mid-level", "Experienced") and "summary" (a brief summary). 
+
+Your response must be ONLY a valid JSON array of objects without any additional text, explanation, or formatting. Example of expected format:
+[
+  {
+    "experience_level": "Fresher",
+    "summary": "A brief summary for fresher level"
+  },
+  {
+    "experience_level": "Mid-level",
+    "summary": "A brief summary for mid-level"
+  },
+  {
+    "experience_level": "Experienced", 
+    "summary": "A brief summary for experienced level"
+  }
+]`;
 
 
 const SummaryForm = ({ resumeId, email, enableNext }) => {
@@ -45,11 +61,49 @@ const SummaryForm = ({ resumeId, email, enableNext }) => {
       const rawResponse = await result.response.text();
       console.log("Raw AI Response:", rawResponse);
 
-      // Ensure response is valid JSON
-      let wrappedResponse = rawResponse.startsWith("[") ? rawResponse : `[${rawResponse}]`;
-      const parsedResponse = JSON.parse(wrappedResponse);
-
-      setAiGenerateSummeryList(parsedResponse);
+      try {
+        // First try parsing as is
+        let parsedResponse;
+        
+        if (rawResponse.trim().startsWith("[") && rawResponse.trim().endsWith("]")) {
+          // Response is already an array
+          parsedResponse = JSON.parse(rawResponse);
+        } else if (rawResponse.trim().startsWith("{") && rawResponse.trim().endsWith("}")) {
+          // Response is a single object
+          parsedResponse = [JSON.parse(rawResponse)];
+        } else {
+          // Try to extract JSON from the text (common with Gemini responses)
+          const jsonMatch = rawResponse.match(/\[.*\]/s) || rawResponse.match(/\{.*\}/s);
+          
+          if (jsonMatch) {
+            const jsonString = jsonMatch[0];
+            parsedResponse = jsonString.startsWith("[") ? 
+              JSON.parse(jsonString) : 
+              [JSON.parse(jsonString)];
+          } else {
+            // Create a fallback response
+            parsedResponse = [
+              {
+                experience_level: "Mid-level",
+                summary: rawResponse.substring(0, 200) + "..."
+              }
+            ];
+          }
+        }
+        
+        console.log("Parsed Response:", parsedResponse);
+        setAiGenerateSummeryList(parsedResponse);
+      } catch (parseError) {
+        console.error("Error parsing JSON response:", parseError);
+        // Fallback: Create a simple response object from the raw text
+        const fallbackResponse = [
+          {
+            experience_level: "General",
+            summary: rawResponse.substring(0, 300)
+          }
+        ];
+        setAiGenerateSummeryList(fallbackResponse);
+      }
     } catch (error) {
       console.error("Error generating summaries:", error);
       toast.error("Failed to generate summaries. Please try again.");

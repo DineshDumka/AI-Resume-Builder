@@ -9,7 +9,7 @@ import SkillsPreview from "./preview/SkillsPreview";
 
 const ResumePreview = () => {
   const { resumeInfo, setResumeInfo } = useContext(ResumeContext);
-  console.log(resumeInfo + "resumeinfo");
+  console.log("Current resumeInfo in ResumePreview:", resumeInfo);
 
   if (!resumeInfo) {
     return (
