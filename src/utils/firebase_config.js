@@ -5,12 +5,12 @@ import { getStorage } from "firebase/storage";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBlg1QKjkXxUXFAfoc_biWw-515Yw5iqTo",
-  authDomain: "clevercv-resume.firebaseapp.com",
-  projectId: "clevercv-resume",
-  storageBucket: "clevercv-resume.firebasestorage.app",
-  messagingSenderId: "405435349497",
-  appId: "1:405435349497:web:83c0ce72d3a992b799a528"
+  apiKey: "AIzaSyDJq7IXAOZEaITJVQrOXH6hOk9vAHCYdwo",
+  authDomain: "codetogether-bf7e1.firebaseapp.com",
+  projectId: "codetogether-bf7e1",
+  storageBucket: "codetogether-bf7e1.appspot.com",
+  messagingSenderId: "621583802793",
+  appId: "1:621583802793:web:43de1b427150ee02f024b8"
 };
 
 const app = initializeApp(firebaseConfig);
