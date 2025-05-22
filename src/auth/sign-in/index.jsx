@@ -65,6 +65,10 @@ const SignInPage = () => {
   const handleGoogleSignIn = async () => {
     try {
       const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
+      
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
@@ -72,7 +76,13 @@ const SignInPage = () => {
       navigate("/dashboard");
     } catch (error) {
       console.error("Google Sign-In Error:", error);
-      alert(error.message);
+      if (error.code === 'auth/popup-closed-by-user') {
+        alert('Sign-in was cancelled. Please try again.');
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        alert('Please wait for the popup to appear and complete the sign-in process.');
+      } else {
+        alert(error.message);
+      }
     }
   };
 
