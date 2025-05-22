@@ -1,4 +1,4 @@
-# CleverCV: AI-Powered Resume Builder
+# CleverCV: AI-Powered Resume Builder.
 
 Welcome to **CleverCV**, an AI-powered resume builder designed to simplify the process of creating professional resumes.
 
