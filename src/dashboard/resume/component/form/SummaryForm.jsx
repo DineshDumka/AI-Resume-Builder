@@ -92,7 +92,7 @@ const SummaryForm = ({ resumeId, email, enableNext }) => {
         }
         
         console.log("Parsed Response:", parsedResponse);
-        setAiGenerateSummeryList(parsedResponse);
+      setAiGenerateSummeryList(parsedResponse);
       } catch (parseError) {
         console.error("Error parsing JSON response:", parseError);
         // Fallback: Create a simple response object from the raw text
